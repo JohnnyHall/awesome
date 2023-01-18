@@ -1,0 +1,29 @@
+---------- pallette ----------
+
+-- wibox
+wicolor_1 = "#b4b4a5"
+wicolor_2 = "#636361"
+wicolor_3 = "#444444"
+wicolor_4 = "#171717"
+wicolor_5 = "#DA0037"
+
+
+theme.fg_normal                                 = "#ffffff"
+theme.fg_focus                                  = "#9e2f46"
+theme.fg_urgent                                 = "#b74822"
+
+theme.bg_normal                                 = "#282a36"
+theme.bg_focus                                  = "#ffffff"
+theme.bg_urgent                                 = "#3F3F3F"
+
+theme.taglist_fg_focus                          = "#282a36"
+theme.tasklist_bg_focus                         = "#000000"
+theme.tasklist_fg_focus                         = "#9e2f46"
+theme.border_width                              = 2
+
+theme.border_normal                             = "#282a36"
+theme.border_focus                              = "#f74d78"
+theme.border_marked                             = "#f74d78"
+
+theme.titlebar_bg_focus                         = "#3F3F3F"
+theme.titlebar_bg_normal                        = "#3F3F3F"
