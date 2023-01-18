@@ -26,34 +26,7 @@ local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 -----------------------------------------------------
 
 ------------------ Error handling -------------------
-
--- Error handling
-if awesome.startup_errors then
-    naughty.notify({
-        preset = naughty.config.presets.critical,
-        title = "Oops, there were errors during startup!",
-        text = awesome.startup_errors
-    })
-end
-
--- Handle runtime errors after startup
-do
-    local in_error = false
-    awesome.connect_signal("debug::error", function(err)
-        -- Make sure we don't go into an endless error loop
-        if in_error then
-            return
-        end
-        in_error = true
-
-        naughty.notify({
-            preset = naughty.config.presets.critical,
-            title = "Oops, an error happened!",
-            text = tostring(err)
-        })
-        in_error = false
-    end)
-end
+local error = require("error")
 -----------------------------------------------------
 
 ----------------- Variable definitions --------------
@@ -68,7 +41,6 @@ run_once({"unclutter -root"}) -- entries must be comma-separated
 -----------------------------------------------------
 
 ----------------- Theme -----------------------------
-
 local themes = {"powerarrow" -- 1
 }
 
@@ -78,16 +50,16 @@ local theme_path = string.format("%s/.config/awesome/themes/%s/theme.lua", os.ge
 beautiful.init(theme_path)
 -----------------------------------------------------
 
-local modkey = "Mod4"
-local altkey = "Mod1"
-local ctrlkey = "Control"
+modkey = "Mod4"
+altkey = "Mod1"
+ctrlkey = "Control"
 
-local terminal = "alacritty"
-local browser = "firefox" --"qutebrowser"
-local editor = "vim"
-local emacs = "emacsclient -c -a 'emacs' "
-local mediaplayer = "mpv"
-local soundplayer = "ffplay -nodisp -autoexit " -- The program that will play system sounds
+terminal = "alacritty"
+browser = "firefox" --"qutebrowser"
+editor = "vim"
+emacs = "emacsclient -c -a 'emacs' "
+mediaplayer = "mpv"
+soundplayer = "ffplay -nodisp -autoexit "
 
 -- awesome variables
 awful.util.terminal = terminal
@@ -193,8 +165,10 @@ beautiful.init(string.format(gears.filesystem.get_configuration_dir() .. "/theme
 
 local myawesomemenu = {{"hotkeys", function()
     return false, hotkeys_popup.show_help
-end}, {"manual", terminal .. " -e 'man awesome'"}, {"edit config", "emacsclient -c -a emacs ~/.config/awesome/rc.lua"},
-                       {"arandr", "arandr"}, {"restart", awesome.restart}}
+end}, 
+{"manual", terminal .. " -e 'man awesome'"}, 
+{"edit config", "emacsclient -c -a emacs ~/.config/awesome/rc.lua"},
+{"arandr", "arandr"}, {"restart", awesome.restart}}
 
 awful.util.mymainmenu = freedesktop.menu.build({
     icon_size = beautiful.menu_height or 16,
@@ -234,20 +208,18 @@ end)
 root.buttons(my_table.join(awful.button({}, 3, function()
     awful.util.mymainmenu:toggle()
 end), awful.button({}, 4, awful.tag.viewnext), awful.button({}, 5, awful.tag.viewprev)))
---------------------------------------------------------------------------------------
---                                 .--------------.                                 --
---                                 | Key bindings |                                 --
---                                 .--------------.                                 --
---------------------------------------------------------------------------------------
+
 
 ------------ Awesome  ------------
 
-local keybindings = require("keybindings")
+local teclas2 = require("keybindings.teclas2")
+local teclas = require("teclas")
+----------------------------------
 
 
--------------------------------------------------------------------------------
-
-clientkeys = my_table.join(awful.key({altkey, "Shift"}, "m", lain.util.magnify_client, {
+clientkeys = my_table.join(
+    
+awful.key({altkey, "Shift"}, "m", lain.util.magnify_client, {
     description = "magnify client",
     group = "client"
 }), 
@@ -294,6 +266,7 @@ for i = 1, number_tagnames do
 
     -- View tag only.
     globalkeys = my_table.join(globalkeys,
+    
     awful.key({modkey}, "#" .. i + 9, function()
         local screen = awful.screen.focused()
         local tag = screen.tags[i]
