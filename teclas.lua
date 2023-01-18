@@ -23,8 +23,12 @@ local freedesktop = require("freedesktop")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 require("awful.hotkeys_popup.keys")
 
-local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
+------------------------------------------------
+local my_table = awful.util.table or gears.table
+------------------------------------------------
 
+
+----------------------------------------------------
 modkey = "Mod4"
 altkey = "Mod1"
 ctrlkey = "Control"
@@ -35,9 +39,14 @@ editor = "vim"
 emacs = "emacsclient -c -a 'emacs' "
 mediaplayer = "mpv"
 soundplayer = "ffplay -nodisp -autoexit "
+----------------------------------------------------
 
 globalkeys = my_table.join(
-    
+
+--------------------------------------------------------------------------------------
+--                                AWESOME                                
+--------------------------------------------------------------------------------------
+
 -- modkey + enter = launch terminal
 awful.key({modkey}, "Return", function()
     awful.spawn(terminal)
@@ -90,6 +99,23 @@ end, {
     group = "awesome"
 }),
 
+-- modkey + shift + "b" = show/hide wibox
+awful.key({modkey, "Shift"}, "b", function()
+    for s in screen do
+        s.mywibox.visible = not s.mywibox.visible
+        if s.mybottomwibox then
+            s.mybottomwibox.visible = not s.mybottomwibox.visible
+        end
+    end
+end, {
+    description = "show/hide wibox",
+    group = "awesome"
+}),
+
+--------------------------------------------------------------------------------------
+--                                XBACKLIGHT                                
+--------------------------------------------------------------------------------------
+
 -- modkey + "F2" = decrease brightness
 awful.key({modkey}, "F2", function()
     awful.spawn("xbacklight -dec 1")
@@ -106,21 +132,9 @@ end, {
     group = "xbacklight"
 }), 
 
--- modkey + shift + "b" = show/hide wibox
-awful.key({modkey, "Shift"}, "b", function()
-    for s in screen do
-        s.mywibox.visible = not s.mywibox.visible
-        if s.mybottomwibox then
-            s.mybottomwibox.visible = not s.mybottomwibox.visible
-        end
-    end
-end, {
-    description = "show/hide wibox",
-    group = "awesome"
-}),
-
-
-----------------------------------
+--------------------------------------------------------------------------------------
+--                                TAG                                
+--------------------------------------------------------------------------------------
 
 -- Tag browsing with modkey
 awful.key({modkey}, "Left", awful.tag.viewprev, {
@@ -148,6 +162,61 @@ awful.key({altkey, "Shift"}, "Tab", awful.tag.viewprev, {
     description = "view previous",
     group = "tag"
 }), 
+
+-- On the fly useless gaps change
+awful.key({altkey, ctrlkey}, "j", function()
+    lain.util.useless_gaps_resize(1)
+end, {
+    description = "increment useless gaps",
+    group = "tag"
+}),
+
+awful.key({altkey, ctrlkey}, "k", function()
+    lain.util.useless_gaps_resize(-1)
+end, {
+    description = "decrement useless gaps",
+    group = "tag"
+}), 
+
+-- Dynamic tagging
+awful.key({modkey, "Shift"}, "n", function()
+    lain.util.add_tag()
+end, {
+    description = "add new tag",
+    group = "tag"
+}),
+
+awful.key({modkey, ctrlkey}, "r", function()
+    lain.util.rename_tag()
+end, {
+    description = "rename tag",
+    group = "tag"
+}),
+
+awful.key({modkey, "Shift"}, "Left", function()
+    lain.util.move_tag(-1)
+end, {
+    description = "move tag to the left",
+    group = "tag"
+}),
+
+awful.key({modkey, "Shift"}, "Right", function()
+    lain.util.move_tag(1)
+end, {
+    description = "move tag to the right",
+    group = "tag"
+}), 
+
+awful.key({modkey, "Shift"}, "d", function()
+    lain.util.delete_tag()
+end, {
+    description = "delete tag",
+    group = "tag"
+}), 
+
+--------------------------------------------------------------------------------------
+--                                CLIENT                                
+--------------------------------------------------------------------------------------
 
 -- Default client focus
 awful.key({modkey}, "j", function()
@@ -261,6 +330,27 @@ end, {
     group = "client"
 }), 
 
+awful.key({modkey}, "u", awful.client.urgent.jumpto, {
+    description = "jump to urgent client",
+    group = "client"
+}),
+
+awful.key({modkey, ctrlkey}, "n", function()
+    local c = awful.client.restore()
+    -- Focus restored client
+    if c then
+        client.focus = c
+        c:raise()
+    end
+end, {
+    description = "restore minimized",
+    group = "client"
+}), 
+
+--------------------------------------------------------------------------------------
+--                                SCREEN                                
+--------------------------------------------------------------------------------------
+
 awful.key({modkey}, ".", function()
     awful.screen.focus_relative(1)
 end, {
@@ -275,61 +365,9 @@ end, {
     group = "screen"
 }), 
 
-awful.key({modkey}, "u", awful.client.urgent.jumpto, {
-    description = "jump to urgent client",
-    group = "client"
-}),
-
--- On the fly useless gaps change
-awful.key({altkey, ctrlkey}, "j", function()
-    lain.util.useless_gaps_resize(1)
-end, {
-    description = "increment useless gaps",
-    group = "tag"
-}),
-
-awful.key({altkey, ctrlkey}, "k", function()
-    lain.util.useless_gaps_resize(-1)
-end, {
-    description = "decrement useless gaps",
-    group = "tag"
-}), 
-
--- Dynamic tagging
-awful.key({modkey, "Shift"}, "n", function()
-    lain.util.add_tag()
-end, {
-    description = "add new tag",
-    group = "tag"
-}),
-
-awful.key({modkey, ctrlkey}, "r", function()
-    lain.util.rename_tag()
-end, {
-    description = "rename tag",
-    group = "tag"
-}),
-
-awful.key({modkey, "Shift"}, "Left", function()
-    lain.util.move_tag(-1)
-end, {
-    description = "move tag to the left",
-    group = "tag"
-}),
-
-awful.key({modkey, "Shift"}, "Right", function()
-    lain.util.move_tag(1)
-end, {
-    description = "move tag to the right",
-    group = "tag"
-}), 
-
-awful.key({modkey, "Shift"}, "d", function()
-    lain.util.delete_tag()
-end, {
-    description = "delete tag",
-    group = "tag"
-}), 
+--------------------------------------------------------------------------------------
+--                                LAYOUT                                
+--------------------------------------------------------------------------------------
 
 awful.key({modkey}, "l", function()
     awful.tag.incmwfact(0.05)
@@ -387,17 +425,9 @@ end, {
     group = "layout"
 }), 
 
-awful.key({modkey, ctrlkey}, "n", function()
-    local c = awful.client.restore()
-    -- Focus restored client
-    if c then
-        client.focus = c
-        c:raise()
-    end
-end, {
-    description = "restore minimized",
-    group = "client"
-}), 
+--------------------------------------------------------------------------------------
+--                                SUPER                                
+--------------------------------------------------------------------------------------
 
 -- Dropdown application
 awful.key({modkey}, "F12", function()
@@ -406,6 +436,10 @@ end, {
     description = "dropdown application",
     group = "super"
 }),
+
+--------------------------------------------------------------------------------------
+--                                WIDGETS                                
+--------------------------------------------------------------------------------------
 
 -- Widgets popups
 awful.key({altkey}, "c", function()
@@ -433,6 +467,10 @@ end, {
     group = "widgets"
 }),
 
+--------------------------------------------------------------------------------------
+--                                HOTKEYS                                
+--------------------------------------------------------------------------------------
+
 -- Run launcher
 awful.key({modkey, "Shift"}, "Return", function()
     awful.util.spawn("dm-run")
@@ -441,7 +479,10 @@ end, {
     group = "hotkeys"
 }),
 
------------------------------ ALSA volume control -----------------------------
+--------------------------------------------------------------------------------------
+--                                ALSA VOLUME CONTROL                                
+--------------------------------------------------------------------------------------
+
 awful.key({modkey}, "F8", function()
     os.execute(string.format("amixer -q set %s 1%%+", beautiful.volume.channel))
     beautiful.volume.update()
