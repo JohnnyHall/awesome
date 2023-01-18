@@ -49,17 +49,8 @@ local chosen_theme = themes[1]
 local theme_path = string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme)
 beautiful.init(theme_path)
 -----------------------------------------------------
+local config = require("config")
 
-modkey = "Mod4"
-altkey = "Mod1"
-ctrlkey = "Control"
-
-terminal = "alacritty"
-browser = "firefox" --"qutebrowser"
-editor = "vim"
-emacs = "emacsclient -c -a 'emacs' "
-mediaplayer = "mpv"
-soundplayer = "ffplay -nodisp -autoexit "
 
 -- awesome variables
 awful.util.terminal = terminal

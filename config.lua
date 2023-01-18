@@ -1,0 +1,10 @@
+modkey = "Mod4"
+altkey = "Mod1"
+ctrlkey = "Control"
+
+terminal = "alacritty"
+browser = "firefox" --"qutebrowser"
+editor = "vim"
+emacs = "emacsclient -c -a 'emacs' "
+mediaplayer = "mpv"
+soundplayer = "ffplay -nodisp -autoexit "
